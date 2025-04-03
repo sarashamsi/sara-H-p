@@ -1,6 +1,7 @@
 import db.Database;
 import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
+
 import example.Document;
 import example.Human;
 import example.HumanValidator;
@@ -36,3 +37,4 @@ public class Main {
     System.out.println("last modification date: " + doc.getLastModificationDate());
 }
 }
+

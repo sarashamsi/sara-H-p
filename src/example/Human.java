@@ -12,6 +12,7 @@ public class Human extends Entity {
         this.age = age ;
     }
 
+
     @Override
     public Human copy () {
         Human copy = new Human(new String(this.name),this.age) ;
