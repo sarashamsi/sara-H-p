@@ -9,6 +9,7 @@ public class Human extends Entity {
         this.name = name ;
     }
 
+
     @Override
     public Human copy () {
         Human copy = new Human(new String(this.name)) ;

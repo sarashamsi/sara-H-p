@@ -12,6 +12,7 @@ public class Database {
     private Database() {}
 
     public static void add(Entity e) {
+
         Entity copy = e.copy();
         copy.id = nextID ++ ;
         entities.add(copy) ;
@@ -23,7 +24,11 @@ public class Database {
     public static Entity get( int id ) throws EntityNotFoundException {
         for (Entity e : entities) {
             if (e.id == id){
+
                 return e.copy() ;
+
+                return e ;
+
             }
         }
         throw new EntityNotFoundException(id) ;
@@ -36,8 +41,10 @@ public class Database {
 
     public static void update (Entity e) throws EntityNotFoundException {
 
+
         Entity existingEntity = get(e.id) ;
         Entity copy = e.copy() ;
         entities.set(entities.indexOf(existingEntity) , copy) ;
+
     }
 }

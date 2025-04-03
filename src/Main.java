@@ -13,5 +13,5 @@ public class Main {
         Human aliFromTheDatabase = (Human) Database.get(ali.id);
 
         System.out.println("ali's name in the database: " + aliFromTheDatabase.name);
-    }
-}
+
+}}
