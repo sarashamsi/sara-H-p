@@ -22,6 +22,7 @@ public class Database {
     // برای جلوگیری از ایجاد نمونه کلاس Database
     private Database() {}
 
+
     public static void add(Entity e) throws InvalidEntityException {
         Validator validator = validators.get(e.getEntityCode());
         if (validator != null){
@@ -38,7 +39,11 @@ public class Database {
     public static Entity get( int id ) throws EntityNotFoundException {
         for (Entity e : entities) {
             if (e.id == id){
+
                 return e.copy() ;
+
+                return e ;
+
             }
         }
         throw new EntityNotFoundException(id) ;
@@ -49,14 +54,17 @@ public class Database {
         entities.remove(e) ;
     }
 
+
     public static void update (Entity e) throws EntityNotFoundException , InvalidEntityException {
         Validator validator = validators.get(e.getEntityCode()) ;
         if (validator != null) {
             validator.validate(e);
         }
+
         Entity existingEntity = get(e.id) ;
         Entity copy = e.copy() ;
         entities.set(entities.indexOf(existingEntity) , copy) ;
+
     }
 
 }
