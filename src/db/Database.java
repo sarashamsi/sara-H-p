@@ -10,7 +10,9 @@ import java.util.HashMap;
 
 public class Database {
     private static ArrayList<Entity> entities = new ArrayList<>() ;
+
     private static int nextID = 1 ;
+
     private static HashMap<Integer, Validator> validators = new HashMap<>() ;
 
     public static void registerValidator(int entityCode, Validator validator) {
@@ -62,13 +64,11 @@ public class Database {
         entities.remove(e) ;
     }
 
-
     public static void update (Entity e) throws EntityNotFoundException , InvalidEntityException {
         Validator validator = validators.get(e.getEntityCode()) ;
         if (validator != null) {
             validator.validate(e);
         }
-
 
         if (e instanceof Trackable) {
             ((Trackable) e).setLastModificationDate(new Date());
@@ -76,6 +76,17 @@ public class Database {
         Entity existingEntity = get(e.id) ;
         Entity copy = e.copy() ;
         entities.set(entities.indexOf(existingEntity) , copy) ;
+
+    }
+
+    public static ArrayList<Entity> getAll(int entityCode) {
+        ArrayList<Entity> res = new ArrayList<>() ;
+        for (Entity entity : entities){
+            if (entity.getEntityCode() == entityCode) {
+                res.add(entity) ;
+            }
+        }
+       return res ;
 
     }
 
