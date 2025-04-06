@@ -4,12 +4,15 @@ import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
 
 public class Database {
     private static ArrayList<Entity> entities = new ArrayList<>() ;
-    public static int nextID = 1 ;
+
+    private static int nextID = 1 ;
+
     private static HashMap<Integer, Validator> validators = new HashMap<>() ;
 
     public static void registerValidator(int entityCode, Validator validator) {
@@ -29,12 +32,14 @@ public class Database {
             validator.validate(e);
         }
 
+
         if (e instanceof Trackable){
             Trackable trackable = (Trackable) e ;
             Date thisTime = new Date() ;
             trackable.setCreationDate(thisTime);
             trackable.setLastModificationDate(thisTime);
         }
+
         Entity copy = e.copy();
         copy.id = nextID ++ ;
         entities.add(copy) ;
@@ -46,7 +51,9 @@ public class Database {
     public static Entity get( int id ) throws EntityNotFoundException {
         for (Entity e : entities) {
             if (e.id == id){
+
                 return e ;
+
             }
         }
         throw new EntityNotFoundException(id) ;
@@ -69,6 +76,7 @@ public class Database {
         Entity existingEntity = get(e.id) ;
         Entity copy = e.copy() ;
         entities.set(entities.indexOf(existingEntity) , copy) ;
+
     }
 
     public static ArrayList<Entity> getAll(int entityCode) {
@@ -79,6 +87,7 @@ public class Database {
             }
         }
        return res ;
+
     }
 
 }
