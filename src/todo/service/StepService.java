@@ -6,6 +6,10 @@ import db.Validator;
 import db.exception.EntityNotFoundException;
 import db.exception.InvalidEntityException;
 import todo.entity.Step;
+import todo.entity.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class StepService  {
@@ -22,6 +26,14 @@ public class StepService  {
 
         Step step = new Step(title,taskRef) ;
         Database.add(step);
+
+
+        Task parentTask = (Task) entity;
+        if ( parentTask.getStatus() == Task.Status.NotStarted || parentTask.getStatus() == Task.Status.Completed) {
+            parentTask.setStatus(Task.Status.InProgress);
+            Database.update(parentTask);
+        }
+
         return step ;
     }
 
@@ -41,9 +53,49 @@ public class StepService  {
         }
 
         Database.update(step);
+
+        if (fieldName.equals("status")){
+            changeTaskStatus(step.getTaskRef());
+        }
     }
-    public static void deleteStep(int stepID){
-        Database.delete(stepID);
+
+
+
+
+    private static void changeTaskStatus(int taskID) throws EntityNotFoundException, InvalidEntityException {
+
+        Task task = (Task) Database.get(taskID);
+
+        List<Step> steps = StepService.getStepsByTaskId(taskID);
+
+        boolean allCompleted = true;
+        for (Step step : steps) {
+            if (step.getStatus() != Step.Status.Completed) {
+                allCompleted = false;
+                break;
+            }
+        }
+
+        if (allCompleted) {
+            task.setStatus(Task.Status.Completed);
+            Database.update(task);
+        } else if (task.getStatus() == Task.Status.NotStarted) {
+
+            task.setStatus(Task.Status.InProgress);
+            Database.update(task);
+        }
+    }
+
+    public static List<Step> getStepsByTaskId(int taskId) {
+        List<Step> steps = new ArrayList<>();
+
+        for (Entity entity : Database.getAll(2)) {
+            Step step = (Step) entity;
+            if (step.getTaskRef() == taskId) {
+                steps.add(step);
+            }
+        }
+        return steps;
     }
 
     public static Step getStep(int stepId) throws EntityNotFoundException {

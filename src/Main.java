@@ -134,35 +134,6 @@ public class Main {
         }
     }
 
-    private static void deleteStepsOfTask(int taskId) {
-        try {
-            ArrayList<Entity> allSteps = Database.getAll(2);
-
-            boolean allDeletedSuccessfully = true;
-
-            for (Entity entity : allSteps) {
-                Step step = (Step) entity;
-                if (step.getTaskRef() == taskId) {
-                    try {
-                        Database.delete(step.id);
-                    } catch (EntityNotFoundException e) {
-                        System.out.println("Warning: Step with ID " + step.id + " not found !");
-                        allDeletedSuccessfully = false;
-                    } catch (Exception e) {
-                        System.out.println("Warning: Could not delete step with ID: " + step.id);
-                        allDeletedSuccessfully = false;
-                    }
-                }
-            }
-
-            if (!allDeletedSuccessfully) {
-                System.out.println("Warning: Some steps of task " + taskId + " could not be deleted");
-            }
-        } catch (Exception e) {
-            System.out.println("Error: Could not retrieve steps for task " + taskId);
-        }
-    }
-
     private static void updateTask(){
         try {
 
@@ -196,21 +167,6 @@ public class Main {
     }
     }
 
-    private static void updateStepsStatus(int taskID , Step.Status newStatus){
-        try {
-            ArrayList<Entity> allSteps = Database.getAll(2);
-            for (Entity entity : allSteps) {
-                Step step = (Step) entity;
-                if (step.getTaskRef() == taskID) {
-                    step.setStatus(newStatus);
-                    Database.update(step);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error!..... Could not update all steps of task : " + taskID);
-        }
-    }
-
     private static void updateStep() throws EntityNotFoundException, InvalidEntityException {
         System.out.print("ID: ");
         int id = Integer.parseInt(scanner.nextLine().trim());
@@ -223,19 +179,7 @@ public class Main {
 
         Step step = StepService.getStep(id);
         String oldValue = getFieldValue(step, field);
-
-        switch (field.toLowerCase()) {
-            case "title":
-                step.setTitle(newValue);
-                break;
-            case "status":
-                step.setStatus(Step.Status.valueOf(newValue));
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid field: " + field);
-        }
-
-        Database.update(step);
+        StepService.updateStepField(id , field , newValue);
 
         System.out.println("Successfully updated the step.");
         System.out.println("Field: " + field);
