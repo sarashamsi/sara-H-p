@@ -133,32 +133,6 @@ public class TaskService {
         }
         return steps;
     }
-    public static void checkAndUpdateTaskStatus(int taskId)
-            throws EntityNotFoundException, InvalidEntityException {
-        Task task = (Task) Database.get(taskId);
-        ArrayList<Step> steps = getStepsForTask(taskId);
-
-        if (steps.isEmpty()) return;
-
-        boolean allCompleted = true;
-        boolean anyCompleted = false;
-
-        for (Step step : steps) {
-            if (step.getStatus() != Step.Status.Completed) {
-                allCompleted = false;
-            } else {
-                anyCompleted = true;
-            }
-        }
-
-        if (allCompleted && task.getStatus() != Task.Status.Completed) {
-            task.setStatus(Task.Status.Completed);
-            Database.update(task);
-        } else if (anyCompleted && task.getStatus() == Task.Status.NotStarted) {
-            task.setStatus(Task.Status.InProgress);
-            Database.update(task);
-        }
-    }
 
     public static ArrayList<Task> getIncompleteTasks() {
         ArrayList<Task> incompleteTasks = new ArrayList<>();
